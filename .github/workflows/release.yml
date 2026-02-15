@@ -42,12 +42,22 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      # Linux musl toolchain
+      # Linux musl toolchain (x86_64)
       - name: Install musl tools
-        if: contains(matrix.target, 'musl')
+        if: contains(matrix.target, 'x86_64-unknown-linux-musl')
         run: |
           sudo apt-get update
           sudo apt-get install -y musl-tools
+
+      # ARM64 musl cross toolchain
+      - name: Install ARM64 musl cross toolchain
+        if: matrix.target == 'aarch64-unknown-linux-musl'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+          wget https://musl.cc/aarch64-linux-musl-cross.tgz
+          tar -xzf aarch64-linux-musl-cross.tgz
+          echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
 
       # macOS Rosetta (needed for cross‑arch builds)
       - name: Install macOS dependencies
@@ -99,4 +109,3 @@ jobs:
                 });
               }
             }
-            
