@@ -15,19 +15,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # --- Linux (static) ---
+          # --- Linux (static musl) ---
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
           - os: ubuntu-latest
             target: aarch64-unknown-linux-musl
 
-          # --- macOS (dynamic) ---
+          # --- macOS ---
           - os: macos-latest
             target: x86_64-apple-darwin
           - os: macos-latest
             target: aarch64-apple-darwin
 
-          # --- Windows (dynamic) ---
+          # --- Windows ---
           - os: windows-latest
             target: x86_64-pc-windows-msvc
           - os: windows-latest
@@ -42,22 +42,18 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      # Linux musl toolchain (x86_64)
+      # Linux musl (x86_64)
       - name: Install musl tools
-        if: contains(matrix.target, 'x86_64-unknown-linux-musl')
+        if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
           sudo apt-get update
           sudo apt-get install -y musl-tools
 
-      # ARM64 musl cross toolchain
-      - name: Install ARM64 musl cross toolchain
+      # ARM64 musl — Rust provides everything needed
+      - name: Install ARM64 musl target
         if: matrix.target == 'aarch64-unknown-linux-musl'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y musl-tools
-          wget https://musl.cc/aarch64-linux-musl-cross.tgz
-          tar -xzf aarch64-linux-musl-cross.tgz
-          echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
+          rustup target add aarch64-unknown-linux-musl
 
       # macOS Rosetta (needed for cross‑arch builds)
       - name: Install macOS dependencies
