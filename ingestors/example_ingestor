@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+while true; do
+  echo '{ "price": 123.45, "ts": 1234567890 }'
+  sleep 1
+done

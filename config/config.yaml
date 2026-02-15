@@ -1,0 +1,7 @@
+telemetry_frequency_seconds: 10
+reconnection_window_seconds: 30
+
+assets:
+  - id: example_pricing
+    type: pricing
+    command: "./ingestors/example_ingestor"
